@@ -1,9 +1,9 @@
 --Registros tabla TIPO
-INSERT INTO Tipo(Id, Tipo) VALUES(1, 'Fijo');
-INSERT INTO Tipo(Id, Tipo) VALUES(2, 'Ley Puente Festivo');
-INSERT INTO Tipo(Id, Tipo) VALUES(3, 'Basado en Pascua');
-INSERT INTO Tipo(Id, Tipo) VALUES(4, 'Basado en Pascua y Ley Puente Festivo');
-INSERT INTO Tipo(Id, Tipo) VALUES(5, 'Ley Puente Festivo Viernes');
+INSERT INTO Tipo(Id, Tipo) VALUES(1, 'Fijo', 'No se puede variar.');
+INSERT INTO Tipo(Id, Tipo) VALUES(2, 'Ley Puente Festivo', 'Se traslada la fecha al siguiente lunes.');
+INSERT INTO Tipo(Id, Tipo) VALUES(3, 'Basado en Pascua', 'La fecha se calcula obteniendo la fecha del domingo de pascua y sumándole los días que correspondan.');
+INSERT INTO Tipo(Id, Tipo) VALUES(4, 'Basado en Pascua y Ley Puente Festivo', 'La fecha se calcula obteniendo la fecha del domingo de pascua y sumándole los días que correspondan. La fecha calculada debe ser trasladada al siguiente lunes.');
+INSERT INTO Tipo(Id, Tipo) VALUES(5, 'Ley Puente Festivo Viernes', 'No definida.');
 
 --Registros tabla PAIS
 INSERT INTO Pais (Id, Nombre) VALUES( 1,'COLOMBIA');

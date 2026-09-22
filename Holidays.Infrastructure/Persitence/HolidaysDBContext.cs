@@ -31,6 +31,12 @@ public sealed class HolidaysDBContext : DbContext {
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .IsRequired();
+            
+            entity.Property(x => x.CalculationMode)
+                .HasColumnName(DomainConstants.Database.HolidayType.Columns.CalculationMode)
+                .HasMaxLength(1024)
+                .IsUnicode(false)
+                .IsRequired();
         });
 
         // Pais

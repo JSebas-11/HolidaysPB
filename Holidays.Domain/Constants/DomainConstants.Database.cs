@@ -7,6 +7,7 @@ public static partial class DomainConstants {
             public static class Columns {
                 public const string Id = "Id";
                 public const string Type = "Tipo";
+                public const string CalculationMode = "ModoCalculo";
             }
         }
         
