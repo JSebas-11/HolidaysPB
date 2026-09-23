@@ -30,7 +30,7 @@ public sealed class HolidayRepository : IHolidayRepository {
             .Include(c => c.HolidayType)
             .Include(c => c.Country)
             .ToListAsync(ct);
-    public async Task<IReadOnlyList<Holiday>> GetAllByCountry(int countryId, CancellationToken ct)
+    public async Task<IReadOnlyList<Holiday>> GetAllByCountryAsync(int countryId, CancellationToken ct)
         => await _context.Holidays
             .AsNoTracking()
             .Include(c => c.HolidayType)
