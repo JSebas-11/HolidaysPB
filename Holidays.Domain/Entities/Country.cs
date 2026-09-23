@@ -12,4 +12,7 @@ public sealed class Country {
     public string Name { get; set; } = string.Empty;
     
     public ICollection<Holiday> Holidays { get; set; } = [];
+
+    public void Copy(Country country)
+        => Name = country.Name;
 }

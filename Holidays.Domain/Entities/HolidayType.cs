@@ -14,4 +14,9 @@ public sealed class HolidayType {
     public string CalculationMode { get; set; } = string.Empty;
     
     public ICollection<Holiday> Holidays { get; set; } = [];
+
+    public void Copy(HolidayType holidayType) {
+        Type = holidayType.Type;
+        CalculationMode = holidayType.CalculationMode;
+    }
 }
