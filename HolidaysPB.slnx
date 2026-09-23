@@ -1,6 +1,7 @@
 <Solution>
   <Project Path="Holidays.API/Holidays.API.csproj" />
   <Project Path="Holidays.Application/Holidays.Application.csproj" />
+  <Project Path="Holidays.Core/Holidays.Core.csproj" />
   <Project Path="Holidays.Domain/Holidays.Domain.csproj" />
   <Project Path="Holidays.Infrastructure/Holidays.Infrastructure.csproj" />
 </Solution>

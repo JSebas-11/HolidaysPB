@@ -23,4 +23,13 @@ public sealed class Holiday {
 
     public HolidayType HolidayType { get; set; } = null!;
     public Country Country { get; set; } = null!;
+
+    public void Copy(Holiday holiday) {
+        Name = holiday.Name;
+        Day = holiday.Day;
+        Month = holiday.Month;
+        EasterDays = holiday.EasterDays;
+        TypeId = holiday.TypeId;
+        CountryId = holiday.CountryId;
+    }
 }
