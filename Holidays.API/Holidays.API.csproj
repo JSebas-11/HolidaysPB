@@ -8,6 +8,13 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <PackageReference Include="Swashbuckle.AspNetCore" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Holidays.Core\Holidays.Core.csproj" />
+    <ProjectReference Include="..\Holidays.Application\Holidays.Application.csproj" />
+    <ProjectReference Include="..\Holidays.Infrastructure\Holidays.Infrastructure.csproj" />
+  </ItemGroup>
+  
 </Project>
