@@ -2,7 +2,6 @@ using HolidaysPB.Application.Common.Constants;
 using HolidaysPB.Application.Features.Countries.Utils;
 using HolidaysPB.Application.Features.Holidays.Utils;
 using HolidaysPB.Application.Features.HolidayTypes.Utils;
-using HolidaysPB.Core.Common.Extensions;
 using HolidaysPB.Core.Common.Result;
 using HolidaysPB.Core.Persistence.Repositories;
 using HolidaysPB.Core.Persistence.UnitOfWork;
@@ -131,9 +130,8 @@ public sealed class HolidayService : IHolidayService {
     private async Task<Result<RelatedEntities>> FetchAndValidateRelatedAsync(
         int? holidayId, int countryId, int typeId, bool isCritical, CancellationToken ct
     ) {
-        (var country, var type) = await (
-            _countryRepo.GetReadOnlyByIdAsync(countryId, ct), _typeRepo.GetReadOnlyByIdAsync(typeId, ct)
-        );
+        var country = await _countryRepo.GetReadOnlyByIdAsync(countryId, ct);
+        var type = await _typeRepo.GetReadOnlyByIdAsync(typeId, ct);
 
         if (country is null)
             return isCritical 
