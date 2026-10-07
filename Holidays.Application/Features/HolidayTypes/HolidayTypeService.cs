@@ -11,10 +11,15 @@ namespace HolidaysPB.Application.Features.HolidayTypes;
 public sealed class HolidayTypeService : IHolidayTypeService {
     // INITIALIZATION
     private readonly IRepository<HolidayType> _holidayTypeRepo;
+    private readonly IHolidayRepository _holidayRepo;
     private readonly RelatedHolidayService _relatedHolidaySvc;
     private readonly IUnitOfWork _uow;
-    public HolidayTypeService(IRepository<HolidayType> holidayTypeRepo, RelatedHolidayService relatedHolidaySvc, IUnitOfWork uow) {
+    public HolidayTypeService(
+        IRepository<HolidayType> holidayTypeRepo, IHolidayRepository holidayRepo,
+        RelatedHolidayService relatedHolidaySvc, IUnitOfWork uow
+    ) {
         _holidayTypeRepo = holidayTypeRepo;
+        _holidayRepo = holidayRepo;
         _relatedHolidaySvc = relatedHolidaySvc;
         _uow = uow;
     }
@@ -64,6 +69,9 @@ public sealed class HolidayTypeService : IHolidayTypeService {
         var holyType = await _holidayTypeRepo.GetByIdAsync(id, ct);
         if (holyType is null)
             return Result.Fail(AppError.NotFound("Holiday Type", id));
+
+        if (await _holidayRepo.HasHolidaysByTypeAsync(id, ct))
+            return Result.Fail(AppError.Conflict($"Holiday Type ({id}) cannot be deleted because it has holidays."));
 
         _holidayTypeRepo.Delete(holyType);
         await _uow.SaveChangesAsync(ct);

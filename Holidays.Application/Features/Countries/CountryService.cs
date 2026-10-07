@@ -11,10 +11,14 @@ namespace HolidaysPB.Application.Features.Countries;
 public sealed class CountryService : ICountryService {
     // INITIALIZATION
     private readonly IRepository<Country> _countryRepo;
+    private readonly IHolidayRepository _holidayRepo;
     private readonly RelatedHolidayService _relatedHolidaySvc;
     private readonly IUnitOfWork _uow;
-    public CountryService(IRepository<Country> countryRepo, RelatedHolidayService relatedHolidaySvc, IUnitOfWork uow) {
+    public CountryService(
+        IRepository<Country> countryRepo, IHolidayRepository holidayRepo,
+        RelatedHolidayService relatedHolidaySvc, IUnitOfWork uow) {
         _countryRepo = countryRepo;
+        _holidayRepo = holidayRepo;
         _relatedHolidaySvc = relatedHolidaySvc;
         _uow = uow;
     }
@@ -64,6 +68,9 @@ public sealed class CountryService : ICountryService {
         var country = await _countryRepo.GetByIdAsync(id, ct);
         if (country is null)
             return Result.Fail(AppError.NotFound("Country", id));
+
+        if (await _holidayRepo.HasHolidaysByCountryAsync(id, ct))
+            return Result.Fail(AppError.Conflict($"Country ({id}) cannot be deleted because it has holidays."));
 
         _countryRepo.Delete(country);
         await _uow.SaveChangesAsync(ct);

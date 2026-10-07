@@ -32,4 +32,9 @@ public sealed class HolidayRepository : IHolidayRepository {
             .AsNoTracking()
             .Where(h => h.TypeId == typeId)
             .ToListAsync(ct);
+
+    public Task<bool> HasHolidaysByCountryAsync(int countryId, CancellationToken ct)
+        => _context.Holidays.AnyAsync(h => h.CountryId == countryId, ct);
+    public Task<bool> HasHolidaysByTypeAsync(int typeId, CancellationToken ct)
+        => _context.Holidays.AnyAsync(h => h.TypeId == typeId, ct);
 }
