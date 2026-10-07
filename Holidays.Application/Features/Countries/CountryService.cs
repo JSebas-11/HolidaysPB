@@ -1,44 +1,64 @@
+using HolidaysPB.Application.Features.Countries.Utils;
+using HolidaysPB.Application.Features.Holidays.Services;
 using HolidaysPB.Core.Common.Result;
 using HolidaysPB.Core.Persistence.Repositories;
 using HolidaysPB.Core.Persistence.UnitOfWork;
-using HolidaysPB.Core.Services;
+using HolidaysPB.Core.Services.Country;
 using HolidaysPB.Domain.Entities;
 
 namespace HolidaysPB.Application.Features.Countries;
 
-public sealed class CountryService : ICrudService<Country> {
+public sealed class CountryService : ICountryService {
     // INITIALIZATION
     private readonly IRepository<Country> _countryRepo;
+    private readonly IHolidayRepository _holidayRepo;
+    private readonly RelatedHolidayService _relatedHolidaySvc;
     private readonly IUnitOfWork _uow;
-    public CountryService(IRepository<Country> countryRepo, IUnitOfWork uow) {
+    public CountryService(
+        IRepository<Country> countryRepo, IHolidayRepository holidayRepo,
+        RelatedHolidayService relatedHolidaySvc, IUnitOfWork uow) {
         _countryRepo = countryRepo;
+        _holidayRepo = holidayRepo;
+        _relatedHolidaySvc = relatedHolidaySvc;
         _uow = uow;
     }
 
     // METHS
-    public async Task<Result<int>> AddAsync(Country entity, CancellationToken ct) {
-        _countryRepo.Add(entity);
+    public async Task<Result<int>> AddAsync(CreateCountryRequest request, CancellationToken ct) {
+        var conversionResult = CountryConverter.ToEntity(request);
+        if (!conversionResult.IsSuccess)
+            return Result<int>.Fail(conversionResult.Error!);
+
+        var country = conversionResult.Value!;
+        _countryRepo.Add(country);
         await _uow.SaveChangesAsync(ct);
 
-        return Result<int>.Ok(entity.Id);
+        return Result<int>.Ok(country.Id);
     }
 
-    public async Task<Result<Country>> GetByIdAsync(int id, CancellationToken ct) {
+    public async Task<Result<CountryDetails>> GetByIdAsync(int id, CancellationToken ct) {
         var country = await _countryRepo.GetReadOnlyByIdAsync(id, ct);
-        return country is null 
-            ? Result<Country>.Fail(AppError.NotFound("Country", id)) 
-            : Result<Country>.Ok(country);
-    }
-    public async Task<Result<IReadOnlyList<Country>>> GetAllAsync(CancellationToken ct)
-        => Result<IReadOnlyList<Country>>.Ok(await _countryRepo.GetAllAsync(ct));
-
-    public async Task<Result> UpdateAsync(Country entity, CancellationToken ct) {
-        var country = await _countryRepo.GetByIdAsync(entity.Id, ct);
         if (country is null)
-            return Result.Fail(AppError.NotFound("Country", entity.Id));
+            return Result<CountryDetails>.Fail(AppError.NotFound("Country", id));
 
-        country.Copy(entity);
-        _countryRepo.Update(country);
+        var countryHols = await _relatedHolidaySvc.GetRelatedByCountryAsync(id, ct);
+        return Result<CountryDetails>.Ok(CountryMapper.ToDetails(country, countryHols));
+    }
+    public async Task<Result<IReadOnlyList<CountryOverview>>> GetAllAsync(CancellationToken ct) {
+        var countries = await _countryRepo.GetAllAsync(ct);
+        return Result<IReadOnlyList<CountryOverview>>.Ok(CountryMapper.ToOverview(countries));
+    }
+
+    public async Task<Result> UpdateAsync(int id, UpdateCountryRequest request, CancellationToken ct) {
+        var conversionResult = CountryConverter.ToEntity(id, request);
+        if (!conversionResult.IsSuccess)
+            return Result.Fail(conversionResult.Error!);
+
+        var country = await _countryRepo.GetByIdAsync(id, ct); // Returns a tracked entity
+        if (country is null)
+            return Result.Fail(AppError.NotFound("Country", id));
+
+        country.Copy(conversionResult.Value!);
         await _uow.SaveChangesAsync(ct);
 
         return Result.Ok();
@@ -48,6 +68,9 @@ public sealed class CountryService : ICrudService<Country> {
         var country = await _countryRepo.GetByIdAsync(id, ct);
         if (country is null)
             return Result.Fail(AppError.NotFound("Country", id));
+
+        if (await _holidayRepo.HasHolidaysByCountryAsync(id, ct))
+            return Result.Fail(AppError.Conflict($"Country ({id}) cannot be deleted because it has holidays."));
 
         _countryRepo.Delete(country);
         await _uow.SaveChangesAsync(ct);

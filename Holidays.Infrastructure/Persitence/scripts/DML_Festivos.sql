@@ -1,32 +1,41 @@
+USE Festivos;
+GO
+
 --Registros tabla TIPO
-INSERT INTO Tipo(Id, Tipo) VALUES(1, 'Fijo', 'No se puede variar.');
-INSERT INTO Tipo(Id, Tipo) VALUES(2, 'Ley Puente Festivo', 'Se traslada la fecha al siguiente lunes.');
-INSERT INTO Tipo(Id, Tipo) VALUES(3, 'Basado en Pascua', 'La fecha se calcula obteniendo la fecha del domingo de pascua y sumándole los días que correspondan.');
-INSERT INTO Tipo(Id, Tipo) VALUES(4, 'Basado en Pascua y Ley Puente Festivo', 'La fecha se calcula obteniendo la fecha del domingo de pascua y sumándole los días que correspondan. La fecha calculada debe ser trasladada al siguiente lunes.');
-INSERT INTO Tipo(Id, Tipo) VALUES(5, 'Ley Puente Festivo Viernes', 'No definida.');
+INSERT INTO Tipo(Tipo) VALUES('Fijo');
+INSERT INTO Tipo(Tipo) VALUES('Ley Puente Festivo');
+INSERT INTO Tipo(Tipo) VALUES('Basado en Pascua');
+INSERT INTO Tipo(Tipo) VALUES('Basado en Pascua y Ley Puente Festivo');
+INSERT INTO Tipo(Tipo) VALUES('Ley Puente Festivo Viernes');
+
+/*INSERT INTO Tipo(Tipo) VALUES('Fijo', 'No se puede variar.');
+INSERT INTO Tipo(Tipo) VALUES('Ley Puente Festivo', 'Se traslada la fecha al siguiente lunes.');
+INSERT INTO Tipo(Tipo) VALUES('Basado en Pascua', 'La fecha se calcula obteniendo la fecha del domingo de pascua y sumándole los días que correspondan.');
+INSERT INTO Tipo(Tipo) VALUES('Basado en Pascua y Ley Puente Festivo', 'La fecha se calcula obteniendo la fecha del domingo de pascua y sumándole los días que correspondan. La fecha calculada debe ser trasladada al siguiente lunes.');
+INSERT INTO Tipo(Tipo) VALUES('Ley Puente Festivo Viernes', 'No definida.');*/
 
 --Registros tabla PAIS
-INSERT INTO Pais (Id, Nombre) VALUES( 1,'COLOMBIA');
-INSERT INTO Pais (Id, Nombre) VALUES( 2,'ARGENTINA');
-INSERT INTO Pais (Id, Nombre) VALUES( 3,'BOLIVIA');
-INSERT INTO Pais (Id, Nombre) VALUES( 4,'BRASIL');
-INSERT INTO Pais (Id, Nombre) VALUES( 5,'CANADA');
-INSERT INTO Pais (Id, Nombre) VALUES( 6,'COSTA RICA');
-INSERT INTO Pais (Id, Nombre) VALUES( 7,'REPUBLICA DOMINICANA');
-INSERT INTO Pais (Id, Nombre) VALUES( 8,'CUBA');
-INSERT INTO Pais (Id, Nombre) VALUES( 9,'CHILE');
-INSERT INTO Pais (Id, Nombre) VALUES(10,'ECUADOR');
-INSERT INTO Pais (Id, Nombre) VALUES(11,'ESTADOS UNIDOS DE AMÉRICA');
-INSERT INTO Pais (Id, Nombre) VALUES(12,'GUATEMALA');
-INSERT INTO Pais (Id, Nombre) VALUES(13,'HONDURAS');
-INSERT INTO Pais (Id, Nombre) VALUES(14,'MÉXICO');
-INSERT INTO Pais (Id, Nombre) VALUES(15,'NICARAGUA');
-INSERT INTO Pais (Id, Nombre) VALUES(16,'PANAMA');
-INSERT INTO Pais (Id, Nombre) VALUES(17,'PARAGUAY');
-INSERT INTO Pais (Id, Nombre) VALUES(18,'PERU');
-INSERT INTO Pais (Id, Nombre) VALUES(19,'URUGUAY');
-INSERT INTO Pais (Id, Nombre) VALUES(20,'VENEZUELA');
-INSERT INTO Pais (Id, Nombre) VALUES(21,'ESPAÑA');
+INSERT INTO Pais (Nombre) VALUES('COLOMBIA');
+INSERT INTO Pais (Nombre) VALUES('ARGENTINA');
+INSERT INTO Pais (Nombre) VALUES('BOLIVIA');
+INSERT INTO Pais (Nombre) VALUES('BRASIL');
+INSERT INTO Pais (Nombre) VALUES('CANADA');
+INSERT INTO Pais (Nombre) VALUES('COSTA RICA');
+INSERT INTO Pais (Nombre) VALUES('REPUBLICA DOMINICANA');
+INSERT INTO Pais (Nombre) VALUES('CUBA');
+INSERT INTO Pais (Nombre) VALUES('CHILE');
+INSERT INTO Pais (Nombre) VALUES('ECUADOR');
+INSERT INTO Pais (Nombre) VALUES('ESTADOS UNIDOS DE AMÉRICA');
+INSERT INTO Pais (Nombre) VALUES('GUATEMALA');
+INSERT INTO Pais (Nombre) VALUES('HONDURAS');
+INSERT INTO Pais (Nombre) VALUES('MÉXICO');
+INSERT INTO Pais (Nombre) VALUES('NICARAGUA');
+INSERT INTO Pais (Nombre) VALUES('PANAMA');
+INSERT INTO Pais (Nombre) VALUES('PARAGUAY');
+INSERT INTO Pais (Nombre) VALUES('PERU');
+INSERT INTO Pais (Nombre) VALUES('URUGUAY');
+INSERT INTO Pais (Nombre) VALUES('VENEZUELA');
+INSERT INTO Pais (Nombre) VALUES('ESPAÑA');
 
 --Registros tabla FESTIVO
 INSERT INTO Festivo (IdPais, Dia, Mes, Nombre, IdTipo, DiasPascua) VALUES(1, 1, 1, 'Año nuevo', 1, 0);

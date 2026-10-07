@@ -9,7 +9,6 @@ public sealed class CountryRepository : IRepository<Country> {
     public CountryRepository(HolidaysDBContext context) => _context = context;
 
     public void Add(Country entity) => _context.Countries.Add(entity);
-    public void Update(Country entity) => _context.Countries.Update(entity);
     public void Delete(Country entity) => _context.Countries.Remove(entity);
         
     public async Task<Country?> GetByIdAsync(int id, CancellationToken ct)
