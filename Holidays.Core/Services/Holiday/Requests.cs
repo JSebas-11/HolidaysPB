@@ -9,4 +9,4 @@ public sealed record UpdateHolidayRequest(
     int CountryId, int TypeId
 );
 
-public sealed record HolidayFilterRequest(int CountryId, int? Year);
+public sealed record HolidayFilterRequest(int CountryId, int Year);

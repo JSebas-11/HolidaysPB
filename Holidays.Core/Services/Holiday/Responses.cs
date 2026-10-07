@@ -14,4 +14,6 @@ public sealed record HolidayOverview(
     int CountryId, int TypeId
 );
 
+public sealed record HolidayDateOverview(int Id, string Holiday, DateOnly Date);
+
 public sealed record RelatedHolidaySummary(int Id, string Name);

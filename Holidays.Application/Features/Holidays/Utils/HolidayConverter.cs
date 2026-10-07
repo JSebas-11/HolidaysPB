@@ -35,7 +35,7 @@ internal static class HolidayConverter {
     }
 
     internal static Result<HolidayFilterRequest> ValidateFilterRequest(HolidayFilterRequest request) {
-        if (request.Year is not null && request.Year is <= 0 or > 9999)
+        if (request.Year is <= 0 or > 9999)
             return Result<HolidayFilterRequest>.Fail(AppError.Validation("Year must be between 1 and 9999."));
 
         return Result<HolidayFilterRequest>.Ok(request);
