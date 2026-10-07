@@ -22,4 +22,10 @@ internal static class HolidayMapper {
             holiday.Day, holiday.Month, holiday.EasterDays,
             holiday.CountryId, holiday.TypeId
         );
+    internal static HolidayOverview ToOverview(Holiday holiday, DateOnly date)
+        => new (
+            holiday.Id, holiday.Name,
+            date.Day, date.Month, holiday.EasterDays,
+            holiday.CountryId, holiday.TypeId
+        );
 }

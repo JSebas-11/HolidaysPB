@@ -10,7 +10,7 @@ using HolidaysPB.Domain.Entities;
 
 namespace HolidaysPB.Application.Features.Holidays;
 
-public sealed class HolidayService : IHolidayService {
+public sealed partial class HolidayService : IHolidayService {
     private record RelatedEntities(Country Country, HolidayType Type);
 
     // INITIALIZATION
@@ -25,7 +25,7 @@ public sealed class HolidayService : IHolidayService {
         _uow = uow;
     }
 
-    // METHS
+    // CRUD METHS
     public async Task<Result<int>> AddAsync(CreateHolidayRequest request, CancellationToken ct) {
         var conversionResult = HolidayConverter.ToEntity(request);
         if (!conversionResult.IsSuccess)
@@ -88,40 +88,7 @@ public sealed class HolidayService : IHolidayService {
         return Result.Ok();
     }
 
-    public async Task<Result<IReadOnlyList<HolidayOverview>>> GetByCountryAsync(HolidayFilterRequest request, CancellationToken ct) {
-        var validationResult = HolidayConverter.ValidateFilterRequest(request);
-        if (!validationResult.IsSuccess)
-            return Result<IReadOnlyList<HolidayOverview>>.Fail(validationResult.Error!);
-
-        var country = await _countryRepo.GetReadOnlyByIdAsync(request.CountryId, ct);
-        if (country is null)
-            return Result<IReadOnlyList<HolidayOverview>>.Fail(AppError.NotFound("Country", request.CountryId));
-        
-        var countryHols = await _holidayRepo.GetAllByCountryAsync(country.Id, ct);
-        if (request.Year is null)
-            return Result<IReadOnlyList<HolidayOverview>>.Ok(HolidayMapper.ToOverview(countryHols));
-
-        return Result<IReadOnlyList<HolidayOverview>>.Ok(CalculateYearHolidays(countryHols, (int)request.Year));
-    }
-
-    public async Task<Result<bool>> IsHolidayAsync(string date, int countryId, CancellationToken ct) {
-        if (!DateOnly.TryParseExact(date, ApplicationConstants.DateFormat, out DateOnly validDate))
-            return Result<bool>.Fail(AppError.Validation($"Provided date is not valid ({date})."));
-
-        var country = await _countryRepo.GetReadOnlyByIdAsync(countryId, ct);
-        if (country is null)
-            return Result<bool>.Fail(AppError.NotFound("Country", countryId));
-
-        var countryHols = await _holidayRepo.GetAllByCountryAsync(countryId, ct);
-        var yearHolidays = CalculateYearHolidays(countryHols, validDate.Year);
-        return Result<bool>.Ok(yearHolidays.Any(h => h.Day == validDate.Day && h.Month == validDate.Month));
-    }
-
     // INNER METHS
-    private static IReadOnlyList<HolidayOverview> CalculateYearHolidays(IReadOnlyList<Holiday> holidays, int year) {
-        throw new NotImplementedException();
-    }
-
     private static HolidayDetails CreateDetails(Holiday holiday, RelatedEntities related)
         => HolidayMapper.ToDetails(
             holiday, CountryMapper.ToOverview(related.Country), HolidayTypeMapper.ToOverview(related.Type)
