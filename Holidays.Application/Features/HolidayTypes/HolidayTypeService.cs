@@ -1,44 +1,60 @@
+using HolidaysPB.Application.Features.Holidays.Services;
+using HolidaysPB.Application.Features.HolidayTypes.Utils;
 using HolidaysPB.Core.Common.Result;
 using HolidaysPB.Core.Persistence.Repositories;
 using HolidaysPB.Core.Persistence.UnitOfWork;
-using HolidaysPB.Core.Services;
+using HolidaysPB.Core.Services.HolidayType;
 using HolidaysPB.Domain.Entities;
 
 namespace HolidaysPB.Application.Features.HolidayTypes;
 
-public sealed class HolidayTypeService : ICrudService<HolidayType> {
+public sealed class HolidayTypeService : IHolidayTypeService {
     // INITIALIZATION
     private readonly IRepository<HolidayType> _holidayTypeRepo;
+    private readonly RelatedHolidayService _relatedHolidaySvc;
     private readonly IUnitOfWork _uow;
-    public HolidayTypeService(IRepository<HolidayType> holidayTypeRepo, IUnitOfWork uow) {
+    public HolidayTypeService(IRepository<HolidayType> holidayTypeRepo, RelatedHolidayService relatedHolidaySvc, IUnitOfWork uow) {
         _holidayTypeRepo = holidayTypeRepo;
+        _relatedHolidaySvc = relatedHolidaySvc;
         _uow = uow;
     }
 
     // METHS
-    public async Task<Result<int>> AddAsync(HolidayType entity, CancellationToken ct) {
-        _holidayTypeRepo.Add(entity);
+    public async Task<Result<int>> AddAsync(CreateHolidayTypeRequest request, CancellationToken ct) {
+        var conversionResult = HolidayTypeConverter.ToEntity(request);
+        if (!conversionResult.IsSuccess)
+            return Result<int>.Fail(conversionResult.Error!);
+
+        var holidayType = conversionResult.Value!;
+        _holidayTypeRepo.Add(holidayType);
         await _uow.SaveChangesAsync(ct);
 
-        return Result<int>.Ok(entity.Id);
+        return Result<int>.Ok(holidayType.Id);
     }
 
-    public async Task<Result<HolidayType>> GetByIdAsync(int id, CancellationToken ct) {
+    public async Task<Result<HolidayTypeDetails>> GetByIdAsync(int id, CancellationToken ct) {
         var holyType = await _holidayTypeRepo.GetReadOnlyByIdAsync(id, ct);
-        return holyType is null 
-            ? Result<HolidayType>.Fail(AppError.NotFound("Holiday Type", id)) 
-            : Result<HolidayType>.Ok(holyType);
-    }
-    public async Task<Result<IReadOnlyList<HolidayType>>> GetAllAsync(CancellationToken ct)
-        => Result<IReadOnlyList<HolidayType>>.Ok(await _holidayTypeRepo.GetAllAsync(ct));
-
-    public async Task<Result> UpdateAsync(HolidayType entity, CancellationToken ct) {
-        var holyType = await _holidayTypeRepo.GetByIdAsync(entity.Id, ct);
         if (holyType is null)
-            return Result.Fail(AppError.NotFound("Holiday Type", entity.Id));
+            return Result<HolidayTypeDetails>.Fail(AppError.NotFound("Holiday Type", id));
 
-        holyType.Copy(entity);
-        _holidayTypeRepo.Update(holyType);
+        var typeHols = await _relatedHolidaySvc.GetRelatedByTypeAsync(id, ct);
+        return Result<HolidayTypeDetails>.Ok(HolidayTypeMapper.ToDetails(holyType, typeHols));
+    }
+    public async Task<Result<IReadOnlyList<HolidayTypeOverview>>> GetAllAsync(CancellationToken ct) {
+        var types = await _holidayTypeRepo.GetAllAsync(ct);
+        return Result<IReadOnlyList<HolidayTypeOverview>>.Ok(HolidayTypeMapper.ToOverview(types));
+    }
+
+    public async Task<Result> UpdateAsync(int id, UpdateHolidayTypeRequest request, CancellationToken ct) {
+        var conversionResult = HolidayTypeConverter.ToEntity(id, request);
+        if (!conversionResult.IsSuccess)
+            return Result.Fail(conversionResult.Error!);
+
+        var holyType = await _holidayTypeRepo.GetByIdAsync(id, ct); // Returns a tracked entity
+        if (holyType is null)
+            return Result.Fail(AppError.NotFound("Holiday Type", id));
+
+        holyType.Copy(conversionResult.Value!);
         await _uow.SaveChangesAsync(ct);
 
         return Result.Ok();

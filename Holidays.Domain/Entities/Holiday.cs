@@ -21,9 +21,6 @@ public sealed class Holiday {
     [Column(DomainConstants.Database.Holiday.Columns.CountryId)]
     public int CountryId { get; set; }
 
-    public HolidayType HolidayType { get; set; } = null!;
-    public Country Country { get; set; } = null!;
-
     public void Copy(Holiday holiday) {
         Name = holiday.Name;
         Day = holiday.Day;

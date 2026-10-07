@@ -9,7 +9,6 @@ public sealed class HolidayTypeRepository : IRepository<HolidayType> {
     public HolidayTypeRepository(HolidaysDBContext context) => _context = context;
 
     public void Add(HolidayType entity) => _context.HolidayTypes.Add(entity);
-    public void Update(HolidayType entity) => _context.HolidayTypes.Update(entity);
     public void Delete(HolidayType entity) => _context.HolidayTypes.Remove(entity);
         
     public async Task<HolidayType?> GetByIdAsync(int id, CancellationToken ct)

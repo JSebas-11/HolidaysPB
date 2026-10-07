@@ -28,15 +28,15 @@ public sealed class HolidaysDBContext : DbContext {
 
             entity.Property(x => x.Type)
                 .HasColumnName(DomainConstants.Database.HolidayType.Columns.Type)
-                .HasMaxLength(100)
+                .HasMaxLength(DomainConstants.Length.HolidayType.MaxType)
                 .IsUnicode(false)
                 .IsRequired();
             
-            entity.Property(x => x.CalculationMode)
+            /*entity.Property(x => x.CalculationMode)
                 .HasColumnName(DomainConstants.Database.HolidayType.Columns.CalculationMode)
-                .HasMaxLength(1024)
+                .HasMaxLength(DomainConstants.Length.HolidayType.MaxCalcMode)
                 .IsUnicode(false)
-                .IsRequired();
+                .IsRequired();*/
         });
 
         // Pais
@@ -51,7 +51,7 @@ public sealed class HolidaysDBContext : DbContext {
 
             entity.Property(x => x.Name)
                 .HasColumnName(DomainConstants.Database.Country.Columns.Name)
-                .HasMaxLength(100)
+                .HasMaxLength(DomainConstants.Length.Country.MaxName)
                 .IsUnicode(false)
                 .IsRequired();
         });
@@ -68,7 +68,7 @@ public sealed class HolidaysDBContext : DbContext {
 
             entity.Property(x => x.Name)
                 .HasColumnName(DomainConstants.Database.Holiday.Columns.Name)
-                .HasMaxLength(100)
+                .HasMaxLength(DomainConstants.Length.Holiday.MaxName)
                 .IsUnicode(false)
                 .IsRequired();
 
@@ -93,14 +93,14 @@ public sealed class HolidaysDBContext : DbContext {
                 .IsRequired();
 
             // FKs
-            entity.HasOne(x => x.HolidayType)
-                .WithMany(x => x.Holidays)
+            entity.HasOne<HolidayType>()
+                .WithMany()
                 .HasForeignKey(x => x.TypeId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("fkFestivo_Tipo");
 
-            entity.HasOne(x => x.Country)
-                .WithMany(x => x.Holidays)
+            entity.HasOne<Country>()
+                .WithMany()
                 .HasForeignKey(x => x.CountryId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("fkFestivo_Pais");

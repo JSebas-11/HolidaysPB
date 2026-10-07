@@ -4,4 +4,5 @@ namespace HolidaysPB.Core.Persistence.Repositories;
 
 public interface IHolidayRepository : IRepository<Holiday> {
     Task<IReadOnlyList<Holiday>> GetAllByCountryAsync(int countryId, CancellationToken ct);
+    Task<IReadOnlyList<Holiday>> GetAllByTypeAsync(int typeId, CancellationToken ct);
 }
