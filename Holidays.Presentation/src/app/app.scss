@@ -1,0 +1,23 @@
+.toolbar {
+  gap: 8px;
+  background: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+}
+
+.title {
+  margin-right: 24px;
+}
+
+nav a {
+  color: inherit;
+}
+
+nav a.active {
+  background: rgb(255 255 255 / 0.2);
+}
+
+.content {
+  max-width: 1000px;
+  margin: 24px auto;
+  padding: 0 16px;
+}

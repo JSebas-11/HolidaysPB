@@ -109,5 +109,5 @@ Ordered by impact on the UI.
 - Validation rules have to account for every type's shape: a single day/month rule broke the Easter-based types the seed data already contains.
 - Validating fields independently (day, month) isn't enough when the real constraint is the combination (a valid date).
 - When several places depend on the same seed ids, name them once (`HolidayTypeIds`) instead of repeating magic numbers.
-- A `#` in the project path (`Coding/c#/`) breaks Vite's dev server in the browser (URL fragment). `curl` returned 200 for the broken URLs because of the SPA fallback; checking the `Content-Type` is what exposed it. Fixed with `prebundle: false`.
+- A `#` in the project path (`Coding/c#/`) breaks Vite's dev server in the browser (URL fragment). `curl` returned 200 for the broken URLs because of the SPA fallback; checking the `Content-Type` is what exposed it. Fixed by renaming the folder to `Coding/cs/` (temporary workaround was `prebundle: false`).
 - Simplified Easter formulas only hold for a limited year range; check edge years against a reference before trusting one.

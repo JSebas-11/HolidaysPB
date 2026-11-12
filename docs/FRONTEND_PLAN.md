@@ -30,7 +30,7 @@ Out of scope: auth, unit tests, pagination, i18n, deployment, the calendar view 
 | CRUD UX | One pattern repeated 3 times: list page + form page (`/x/nuevo`, `/x/:id`), delete with a confirm dialog | Learn it once on countries, copy it twice. |
 | Holiday types in holiday form | Only ids 1-5 offered | Types 6+ have no date rule (API `409` on calendar). Decided 2026-11-12, option 1. |
 | Error messages | Spanish messages chosen in the UI by HTTP status / context, shown in a snackbar | API `detail` messages are English. |
-| `prebundle: false` in `angular.json` serve options | Required on this machine | The repo path contains `c#`. Vite serves prebundled deps from `/@fs/<absolute path>`; the browser treats `#` as a URL fragment, so every Angular import got `index.html` back (blank page). Disabling prebundling bundles deps into `main.js`. Alternative: rename the `c#` folder. |
+| No `#` in the project path | Folder renamed `Coding/c#` -> `Coding/cs` (2026-11-12) | Vite serves deps from `/@fs/<absolute path>`; the browser treats `#` as a URL fragment, so Angular's own code got `index.html` back (blank page). Workaround if a path with `#` is unavoidable: `"prebundle": false` in `angular.json` serve options (removed once the folder was renamed). |
 | No global Angular CLI | `npx ng ...` / `npm start` inside `Holidays.Presentation` | Global `npm -g` with the system Node needs sudo; the project's local CLI is enough. |
 | Route params | `withComponentInputBinding()`: `:id` arrives as a component `input()` | Less boilerplate than reading `ActivatedRoute`. |
 
@@ -144,7 +144,7 @@ npm install        # first time / after pulling on another machine
 npm start          # http://localhost:4200, proxies /api to :7041
 ```
 
-Fresh machine (e.g. the Mint laptop): Node >= 24.15 (Mint's apt Node is too old; use nvm or NodeSource), then the commands above. If that machine's repo path also contains `#`, `prebundle: false` already covers it.
+Fresh machine (e.g. the Mint laptop): Node >= 24.15 (Mint's apt Node is too old; use nvm or NodeSource), then the commands above. Keep `#` out of that machine's repo path too (see Decisions).
 
 ## How it was scaffolded (for reference)
 
