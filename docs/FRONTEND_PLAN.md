@@ -29,7 +29,8 @@ Out of scope: auth, unit tests, pagination, i18n, deployment, the calendar view 
 | Forms | Reactive Forms | Stable, typed, explicit validators. Closest to how you'd think about validation in C#. |
 | CRUD UX | One pattern repeated 3 times: list page + form page (`/x/nuevo`, `/x/:id`), delete with a confirm dialog | Learn it once on countries, copy it twice. |
 | Holiday types in holiday form | Only ids 1-5 offered | Types 6+ have no date rule (API `409` on calendar). Decided 2026-11-12, option 1. |
-| Error messages | Spanish messages chosen in the UI by HTTP status / context, shown in a snackbar | API `detail` messages are English. |
+| Error messages | Spanish messages chosen in the UI by HTTP status / context, shown in a snackbar | API `detail` messages are English. The dev proxy answers **502** when the API is down; mapped to "No se pudo conectar con el servidor." |
+| API services | Generic abstract `CrudService<TOverview, TDetails, TRequest>`; one 3-line subclass per resource | The 3 CRUD resources have identical endpoints. Same idea as a generic repository. |
 | No `#` in the project path | Folder renamed `Coding/c#` -> `Coding/cs` (2026-11-12) | Vite serves deps from `/@fs/<absolute path>`; the browser treats `#` as a URL fragment, so Angular's own code got `index.html` back (blank page). Workaround if a path with `#` is unavoidable: `"prebundle": false` in `angular.json` serve options (removed once the folder was renamed). |
 | No global Angular CLI | `npx ng ...` / `npm start` inside `Holidays.Presentation` | Global `npm -g` with the system Node needs sudo; the project's local CLI is enough. |
 | Route params | `withComponentInputBinding()`: `:id` arrives as a component `input()` | Less boilerplate than reading `ActivatedRoute`. |
@@ -42,7 +43,7 @@ Everything this app needs. Learn them as they show up in the milestones, not upf
 |---|---|---|
 | Component | A class (`.ts`) + template (`.html`) + styles (`.scss`). A piece of UI. | A Razor view + its code-behind |
 | Standalone component | Declares its own `imports: [...]` (other components, Material modules). No NgModules. | `using` directives per file |
-| Service + `inject()` | Injectable class, singleton by default (`providedIn: 'root'`). Pulled in with `inject(CountryApi)`. | DI-registered singleton, constructor injection |
+| Service + `inject()` | Injectable class, singleton by default (`providedIn: 'root'`). Pulled in with `inject(CountryService)`. | DI-registered singleton, constructor injection |
 | `HttpClient` | Makes HTTP calls, returns an `Observable<T>`. | `HttpClient` returning `Task<T>`, except lazy: nothing happens until you `subscribe` |
 | Interfaces as models | TS `interface` matching the JSON shape. | `record` DTOs |
 | Signals | `signal(value)`, read with `x()`, write with `x.set()`. Template re-renders when they change. `computed()` derives values. | Observable property with change notification |
@@ -51,7 +52,7 @@ Everything this app needs. Learn them as they show up in the milestones, not upf
 | Reactive Forms | `FormGroup` of `FormControl`s with validators; form state lives in the class. | Model + DataAnnotations / FluentValidation |
 | Angular Material | Prebuilt components: `mat-table`, `mat-form-field`, `mat-select`, `mat-datepicker`, `MatDialog`, `MatSnackBar`. | A component library like MudBlazor |
 
-Naming note: since Angular 20 the CLI drops the `.component`/`.service` suffixes (`ng g c country-list` creates `country-list.ts` with class `CountryList`). We name API services `*-api` (`CountryApi`) so they don't clash with model interfaces (`Country...`).
+Naming note: since Angular 20 the CLI drops the `.component`/`.service` suffixes (`ng g c country-list` creates `country-list.ts` with class `CountryList`). We keep the suffix for API services (`CountryService` in `country-service.ts`), by choice. TS interfaces only describe data shapes and are erased at compile time, so DI always injects classes, never interfaces.
 
 ## Project structure
 
@@ -66,12 +67,14 @@ Holidays.Presentation/
       app.config.ts                   provideRouter, provideHttpClient, date adapter, locale 'es'
       app.routes.ts
       core/
-        models/                       country.ts, holiday-type.ts, holiday.ts, calendar.ts (copied from API.md)
-        services/                     country-api.ts, holiday-type-api.ts, holiday-api.ts, calendar-api.ts
-        errors/error-messages.ts      HttpErrorResponse -> Spanish message
-        validators/holiday-date.ts    day-fits-month validator (mirrors API rule, no Feb 29)
+        models/                       country.ts, holiday-type.ts (+ HolidayTypeId enum, isEasterBased), holiday.ts, calendar.ts
+        services/                     crud-service.ts (generic base: getAll/getById/create/update/delete),
+                                      country-service.ts, holiday-type-service.ts, holiday-service.ts (extend CrudService), calendar-service.ts
+        errors/error-messages.ts      HttpErrorResponse status -> Spanish message, with per-call overrides
+        validators/holiday-date.ts    (milestone 5) day-fits-month validator (mirrors API rule, no Feb 29)
       shared/
-        confirm-dialog/               Reusable "¿Seguro que desea eliminar...?" dialog
+        notifier.ts                   Notifier.success(msg) / Notifier.error(err, overrides) -> snackbar
+        confirm-dialog/               ConfirmDialog component + Confirmation.ask(data): Observable<boolean>
       features/
         countries/                    country-list/, country-form/
         holiday-types/                holiday-type-list/, holiday-type-form/
@@ -121,8 +124,8 @@ Each one ends with something visible in the browser. Day estimates assume ~3-4 h
 | # | Milestone | Done when | Target |
 |---|---|---|---|
 | 0 | **Done 2026-11-12.** Environment: Node 24, SQL Server container up, API running, backend fixes checked with curl | `curl localhost:7041/api/paises` returns the countries | Nov 12-13 |
-| 1 | **Done 2026-11-12 (pending your browser check).** Scaffold `Holidays.Presentation`, add Material, proxy, locale `es`, shell + routes with placeholder pages | `npm start`, nav between empty pages, a test call through the proxy works | Nov 13 |
-| 2 | Models, `*-api` services, error-message helper, confirm dialog | Services callable from a component | Nov 13 |
+| 1 | **Done 2026-11-12.** Scaffold `Holidays.Presentation`, add Material, proxy, locale `es`, shell + routes with placeholder pages | `npm start`, nav between empty pages, a test call through the proxy works | Nov 13 |
+| 2 | **Done 2026-11-12 (compiles; first runtime use in milestone 3).** Models, `*-service` API services, error-message helper, notifier, confirm dialog | Services callable from a component | Nov 13 |
 | 3 | Countries CRUD (the reference pattern, explained step by step) | Create/edit/delete a country, 409 on Colombia shows Spanish message | Nov 14 |
 | 4 | Holiday types CRUD (copy of 3) | Same for types | Nov 14 |
 | 5 | Holidays CRUD (selects, conditional fields, date validator) | Create a fixed and an Easter-based holiday, Feb 30 blocked in form | Nov 15 |

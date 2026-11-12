@@ -17,7 +17,7 @@ Scope is "make it work for the assignment". No extra polish or API work beyond w
 - Backend: all 5 layers implemented, builds with 0 errors. CRUD for countries, types and holidays + calendar endpoints working.
 - Backend fixes done: Easter-based holiday validation and day-vs-month validation (Known issues 1, 2).
 - Backend fixes verified live against SQL Server (2026-11-12): Easter types save as 0/0, impossible dates rejected, seeded Easter holiday round-trips with 204.
-- Frontend: milestones 0-1 done (scaffold, Material, proxy, Spanish locale, toolbar shell, all routes with placeholder pages). Next: milestone 2. Plan: `docs/FRONTEND_PLAN.md`.
+- Frontend: milestones 0-2 done (scaffold, Material, proxy, Spanish locale, toolbar shell, routes with placeholder pages; models, API services, error messages, notifier, confirm dialog). Next: milestone 3 (Countries CRUD). Plan: `docs/FRONTEND_PLAN.md`.
 - Dev machine: Node 24.18, SQL Server in Docker (`sql_server` container).
 - Local DB has non-seed test data: country 22 "UNITED KINGDOM" and type 6 "Saint Patrick's Day" with holiday 32 "Tech day". Because of it, the UK calendar returns 409 (expected, see Known issue 3).
 - Tests: none.
