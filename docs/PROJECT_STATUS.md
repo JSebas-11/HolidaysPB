@@ -1,6 +1,6 @@
 # HolidaysPB - Project Status
 
-College project: REST API that stores holiday rules per country and computes the actual holiday dates for any year. Backend done and approved by the professor; next phase is the UI.
+College project: REST API that stores holiday rules per country and computes the actual holiday dates for any year. Backend approved by the professor; Angular UI built for the final 15% of the assignment.
 
 For the HTTP contract (endpoints, DTOs, errors, frontend gotchas) read **`docs/API.md`**. This file covers how the solution is built, how to run it, and where we are.
 
@@ -12,24 +12,25 @@ Angular CLI app with:
 
 Scope is "make it work for the assignment". No extra polish or API work beyond what blocks the UI.
 
-## Current status (2026-11-12)
+## Current status (2026-11-13)
 
 - Backend: all 5 layers implemented, builds with 0 errors. CRUD for countries, types and holidays + calendar endpoints working.
-- Backend fixes done: Easter-based holiday validation and day-vs-month validation (Known issues 1, 2).
-- Backend fixes verified live against SQL Server (2026-11-12): Easter types save as 0/0, impossible dates rejected, seeded Easter holiday round-trips with 204.
-- Frontend: milestones 0-2 done (scaffold, Material, proxy, Spanish locale, toolbar shell, routes with placeholder pages; models, API services, error messages, notifier, confirm dialog). Next: milestone 3 (Countries CRUD). Plan: `docs/FRONTEND_PLAN.md`.
+- Backend fixes done and verified live: Easter-based holiday validation and day-vs-month validation (Known issues 1, 2).
+- Frontend: **feature-complete for the assignment.** Angular 22 + Material app in `Holidays.Presentation/`: CRUD for countries, holiday types and holidays, plus the holiday validation page. Milestones 0-7 done; full manual checklist green (2026-11-13). Details: `docs/FRONTEND_PLAN.md`.
 - Dev machine: Node 24.18, SQL Server in Docker (`sql_server` container).
-- Local DB has non-seed test data: country 22 "UNITED KINGDOM" and type 6 "Saint Patrick's Day" with holiday 32 "Tech day". Because of it, the UK calendar returns 409 (expected, see Known issue 3).
-- Tests: none.
-- Docs: `docs/API.md` (contract), `docs/FRONTEND_PLAN.md` (UI plan + milestones), this file (status).
+- Local DB has non-seed test data: country 22 "UNITED KINGDOM" and type 6 "Saint Patrick's Day" with holiday 32 "Tech day". Because of it, the UK calendar returns 409 (expected, see Known issue 3). Avoid UK in the demo or delete holiday 32.
+- Tests: none (manual checklist in `docs/FRONTEND_PLAN.md`).
+- Docs: `docs/API.md` (contract), `docs/FRONTEND_PLAN.md` (UI plan, decisions, checklist), `Holidays.Presentation/README.md` (UI run/structure), this file (status).
 
 ## Next steps
 
-Follow the milestones in `docs/FRONTEND_PLAN.md`, starting with milestone 0 (Node 24, Angular CLI, SQL Server up, smoke-test the API).
+1. Before committing: keep `Holidays.API/appsettings.json` out of the commit (it holds the SA password); move it to user-secrets (see How to run).
+2. Hand in by 2026-11-17.
+3. Optional, only if time is left: backlog items below (none block the assignment).
 
 ## Open decisions
 
-None blocking. UI decisions (Angular 22, Material, Spanish UI, dev proxy, holiday types limited to 1-5 in the form) are recorded in `docs/FRONTEND_PLAN.md`.
+None.
 
 ## How to run
 
@@ -41,8 +42,9 @@ None blocking. UI decisions (Angular 22, Material, Spanish UI, dev proxy, holida
    dotnet user-secrets set "ConnectionStrings:DBConnection" "Server=localhost,1433;Database=Festivos;User=sa;Password=<pwd>;TrustServerCertificate=True;" --project Holidays.API
    ```
 4. `dotnet run --project Holidays.API --launch-profile http` -> `http://localhost:7041/swagger`.
+5. UI, in a second terminal: `cd Holidays.Presentation && npm install && npm start` -> `http://localhost:4200` (needs Node >= 24.15; details in `Holidays.Presentation/README.md`).
 
-The app throws on startup if `DBConnection` is missing.
+The API throws on startup if `DBConnection` is missing. The UI shows "No se pudo conectar con el servidor" if the API isn't running.
 
 ## Architecture
 
@@ -85,6 +87,7 @@ Dependency direction: `API -> Application -> Core -> Domain`, `Infrastructure ->
 - **Spanish DB schema and routes, English code.** Mapping via `DomainConstants.Database`. Routes match the assignment (`/api/paises`, `/api/festivos`, ...).
 - **Schema from SQL scripts, not migrations.** Matches what the course provided.
 - **Delete is restricted**: countries/types with holidays return 409 (checked in service + `DeleteBehavior.Restrict` on FKs).
+- **Frontend: Angular 22 + Angular Material, Spanish UI, dev proxy instead of CORS, holiday form limited to types 1-5.** Full list with reasons in `docs/FRONTEND_PLAN.md` (Decisions).
 - **Separate tracked vs read-only repo reads** (`GetByIdAsync` tracked for updates/deletes, `GetReadOnlyByIdAsync` with `AsNoTracking` for queries).
 
 ## Known issues / backlog
@@ -102,6 +105,7 @@ Ordered by impact on the UI.
 9. **Vulnerable transitive package**: `System.Security.Cryptography.Pkcs 9.0.11` (one moderate, one high advisory, NU1902/NU1903 on build). Pulled in transitively; pin a patched version in `Directory.Packages.props` (transitive pinning is already enabled).
 10. **No tests.** The calculation strategies are the obvious first target.
 11. **Stale `.http` file** (template leftover).
+12. **UI production bundle over the warning budget**: 876 kB initial (183 kB gzipped) vs 500 kB warning / 1 MB error. Doesn't affect `npm start`. Fix if ever needed: lazy-load routes with `loadComponent`.
 
 ## Lessons learned
 
@@ -111,3 +115,7 @@ Ordered by impact on the UI.
 - When several places depend on the same seed ids, name them once (`HolidayTypeIds`) instead of repeating magic numbers.
 - A `#` in the project path (`Coding/c#/`) breaks Vite's dev server in the browser (URL fragment). `curl` returned 200 for the broken URLs because of the SPA fallback; checking the `Content-Type` is what exposed it. Fixed by renaming the folder to `Coding/cs/` (temporary workaround was `prebundle: false`).
 - Simplified Easter formulas only hold for a limited year range; check edge years against a reference before trusting one.
+- Angular (zoneless, v21+) only re-renders when signals change. Keeping all component state in signals avoided the "data loaded but screen didn't update" trap common in older tutorials.
+- A selector Material doesn't recognize (e.g. a wrong button attribute) fails silently: no build error, just an unstyled element. Check the library's selectors when the docs and the installed version may differ.
+- Copying the CRUD pattern twice (countries, types) was cheaper and easier to explain than a generic list/form component. Abstract at the third copy, not the second.
+- Build the date URL and date comparisons from local getters (`getFullYear/getMonth/getDate`), never `toISOString()`, or dates picked in UTC-5 can shift a day.

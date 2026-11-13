@@ -11,7 +11,14 @@ interface NavLink {
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, MatToolbarModule, MatButtonModule, MatIconModule],
+  imports: [
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    MatToolbarModule,
+    MatButtonModule,
+    MatIconModule,
+  ],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
@@ -24,7 +31,6 @@ export class App {
   ];
 
   constructor() {
-    // index.html loads the "Material Symbols" icon font; tell <mat-icon> to use it
     inject(MatIconRegistry).setDefaultFontSetClass('material-symbols-outlined');
   }
 }

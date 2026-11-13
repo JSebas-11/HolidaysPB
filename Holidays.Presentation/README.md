@@ -1,59 +1,50 @@
-# HolidaysPresentation
+# Holidays.Presentation
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.7.
+Angular 22 + Angular Material UI for the Holidays API. UI text in Spanish.
 
-## Development server
+Screens:
 
-To start a local development server, run:
+| URL | Screen |
+|---|---|
+| `/validacion` (home) | Holiday check: country + date -> "Es festivo / No es festivo", plus that year's holidays |
+| `/paises` | Countries CRUD |
+| `/tipos` | Holiday types CRUD |
+| `/festivos` | Holidays CRUD |
 
-```bash
-ng serve
-```
+## Requirements
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- Node.js >= 24.15 (or >= 22.22.3)
+- The API running on `http://localhost:7041` (see `docs/PROJECT_STATUS.md`, "How to run")
+- No `#` in the folder path: Vite's dev server breaks on it
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Run
 
 ```bash
-ng generate --help
+npm install   # first time only
+npm start     # http://localhost:4200
 ```
 
-## Building
+`npm start` proxies every `/api/*` request to `http://localhost:7041` (`proxy.conf.json`), so the API needs no CORS setup.
 
-To build the project run:
+## Structure
+
+```
+src/app/
+  core/models/       Interfaces matching the API JSON (+ HolidayTypeId enum)
+  core/services/     One service per API resource (CrudService base for the 3 CRUDs, CalendarService)
+  core/errors/       HTTP status -> Spanish message
+  core/validators/   dayInMonthValidator
+  core/utils/        Month names, local date formatting
+  shared/            Notifier (snackbar), Confirmation dialog
+  features/          One folder per screen
+```
+
+Full API contract: `docs/API.md`. Design decisions: `docs/FRONTEND_PLAN.md`.
+
+## Commands
 
 ```bash
-ng build
+npm start                         # dev server
+npx ng build                      # production build into dist/
+npx prettier --write "src/**/*.{ts,html,scss}"   # format
 ```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.

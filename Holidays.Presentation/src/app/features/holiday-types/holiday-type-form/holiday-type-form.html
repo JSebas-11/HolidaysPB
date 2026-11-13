@@ -1,1 +1,27 @@
-<p>holiday-type-form works!</p>
+<h1>{{ isEdit() ? 'Editar tipo de festivo' : 'Nuevo tipo de festivo' }}</h1>
+
+<form [formGroup]="form" (ngSubmit)="save()" class="entity-form">
+  <mat-form-field>
+    <mat-label>Tipo</mat-label>
+    <input matInput formControlName="type" />
+    @if (form.controls.type.hasError('maxlength')) {
+      <mat-error>Máximo 100 caracteres.</mat-error>
+    } @else {
+      <mat-error>El tipo es obligatorio.</mat-error>
+    }
+  </mat-form-field>
+
+  <div class="form-actions">
+    <a mat-button routerLink="/tipos">Cancelar</a>
+    <button mat-flat-button type="submit" [disabled]="saving()">Guardar</button>
+  </div>
+</form>
+
+@if (holidays().length > 0) {
+  <h2>Festivos asociados</h2>
+  <ul>
+    @for (holiday of holidays(); track holiday.id) {
+      <li>{{ holiday.name }}</li>
+    }
+  </ul>
+}

@@ -1,0 +1,36 @@
+.check-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 16px;
+}
+
+.result {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 16px 0 24px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  background: var(--mat-sys-surface-container-high);
+  color: var(--mat-sys-on-surface);
+
+  &.is-holiday {
+    background: var(--mat-sys-primary-container);
+    color: var(--mat-sys-on-primary-container);
+  }
+}
+
+.result-icon {
+  font-size: 40px;
+  width: 40px;
+  height: 40px;
+}
+
+.result-title {
+  font: var(--mat-sys-title-large);
+}
+
+.selected-date {
+  background: var(--mat-sys-primary-container);
+}

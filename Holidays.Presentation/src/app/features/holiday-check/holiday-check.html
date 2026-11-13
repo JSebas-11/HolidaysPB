@@ -1,1 +1,74 @@
-<p>holiday-check works!</p>
+<h1>Validación de festivos</h1>
+
+<form [formGroup]="form" (ngSubmit)="check()" class="check-form">
+  <mat-form-field>
+    <mat-label>País</mat-label>
+    <mat-select formControlName="countryId">
+      @for (country of countries(); track country.id) {
+        <mat-option [value]="country.id">{{ country.name }}</mat-option>
+      }
+    </mat-select>
+    <mat-error>Seleccione un país.</mat-error>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Fecha</mat-label>
+    <!-- readonly: the date is picked from the calendar, typing formats aren't parsed reliably -->
+    <input
+      matInput
+      readonly
+      formControlName="date"
+      [matDatepicker]="picker"
+      [min]="minDate"
+      [max]="maxDate"
+      (click)="picker.open()"
+    />
+    <mat-datepicker-toggle matIconSuffix [for]="picker" />
+    <mat-datepicker #picker />
+    <mat-error>Seleccione una fecha.</mat-error>
+  </mat-form-field>
+
+  <button mat-flat-button type="submit" [disabled]="checking()">Verificar</button>
+</form>
+
+@if (checking()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+@if (result(); as result) {
+  <div class="result" [class.is-holiday]="result.isHoliday">
+    <mat-icon class="result-icon">{{ result.isHoliday ? 'celebration' : 'work' }}</mat-icon>
+    <div>
+      <div class="result-title">{{ result.isHoliday ? 'Es festivo' : 'No es festivo' }}</div>
+      <div>{{ result.date | date: 'fullDate' }} · {{ result.countryName }}</div>
+      @if (result.holidayNames.length > 0) {
+        <div>{{ result.holidayNames.join(', ') }}</div>
+      }
+    </div>
+  </div>
+
+  <h2>Festivos de {{ result.countryName }} en {{ result.date.getFullYear() }}</h2>
+
+  @if (result.yearHolidays.length === 0) {
+    <p>Este país no tiene festivos registrados.</p>
+  } @else {
+    <table mat-table [dataSource]="result.yearHolidays" class="data-table">
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef>Fecha</th>
+        <td mat-cell *matCellDef="let holiday">{{ holiday.date | date: "EEEE d 'de' MMMM" }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="holiday">
+        <th mat-header-cell *matHeaderCellDef>Festivo</th>
+        <td mat-cell *matCellDef="let holiday">{{ holiday.holiday }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: columns"
+        [class.selected-date]="row.date === result.isoDate"
+      ></tr>
+    </table>
+  }
+}

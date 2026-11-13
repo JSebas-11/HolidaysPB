@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HolidayTypeDetails, HolidayTypeOverview, HolidayTypeRequest } from '../models/holiday-type';
+import {
+  HolidayTypeDetails,
+  HolidayTypeOverview,
+  HolidayTypeRequest,
+} from '../models/holiday-type';
 import { CrudService } from './crud-service';
 
 @Injectable({ providedIn: 'root' })

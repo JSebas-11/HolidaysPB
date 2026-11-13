@@ -49,3 +49,26 @@ body {
 .full-width {
   width: 100%;
 }
+
+.data-table {
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.actions-cell {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.entity-form {
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}

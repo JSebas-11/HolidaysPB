@@ -71,7 +71,9 @@ Holidays.Presentation/
         services/                     crud-service.ts (generic base: getAll/getById/create/update/delete),
                                       country-service.ts, holiday-type-service.ts, holiday-service.ts (extend CrudService), calendar-service.ts
         errors/error-messages.ts      HttpErrorResponse status -> Spanish message, with per-call overrides
-        validators/holiday-date.ts    (milestone 5) day-fits-month validator (mirrors API rule, no Feb 29)
+        validators/holiday-date.ts    dayInMonthValidator (mirrors API rule, no Feb 29)
+        utils/months.ts               MONTH_NAMES (Spanish)
+        utils/dates.ts                toLocalIsoDate(date) -> "yyyy-MM-dd" without UTC shift
       shared/
         notifier.ts                   Notifier.success(msg) / Notifier.error(err, overrides) -> snackbar
         confirm-dialog/               ConfirmDialog component + Confirmation.ask(data): Observable<boolean>
@@ -126,11 +128,11 @@ Each one ends with something visible in the browser. Day estimates assume ~3-4 h
 | 0 | **Done 2026-11-12.** Environment: Node 24, SQL Server container up, API running, backend fixes checked with curl | `curl localhost:7041/api/paises` returns the countries | Nov 12-13 |
 | 1 | **Done 2026-11-12.** Scaffold `Holidays.Presentation`, add Material, proxy, locale `es`, shell + routes with placeholder pages | `npm start`, nav between empty pages, a test call through the proxy works | Nov 13 |
 | 2 | **Done 2026-11-12 (compiles; first runtime use in milestone 3).** Models, `*-service` API services, error-message helper, notifier, confirm dialog | Services callable from a component | Nov 13 |
-| 3 | Countries CRUD (the reference pattern, explained step by step) | Create/edit/delete a country, 409 on Colombia shows Spanish message | Nov 14 |
-| 4 | Holiday types CRUD (copy of 3) | Same for types | Nov 14 |
-| 5 | Holidays CRUD (selects, conditional fields, date validator) | Create a fixed and an Easter-based holiday, Feb 30 blocked in form | Nov 15 |
-| 6 | Validation page | 2025-03-24 Colombia -> festivo (San José moved), 2025-03-19 -> no | Nov 15-16 |
-| 7 | Manual test pass, polish, run instructions in `PROJECT_STATUS.md` | Checklist below all green | Nov 16 |
+| 3 | **Done 2026-11-13 (tested in browser by user).** Countries CRUD (the reference pattern, explained step by step) | Create/edit/delete a country, 409 on Colombia shows Spanish message | Nov 14 |
+| 4 | **Done 2026-11-13 (tested in browser by user).** Holiday types CRUD (copy of 3) | Same for types | Nov 14 |
+| 5 | **Done 2026-11-13 (tested in browser by user).** Holidays CRUD (selects, conditional fields, date validator) | Create a fixed and an Easter-based holiday, Feb 30 blocked in form | Nov 15 |
+| 6 | **Done 2026-11-13 (tested in browser by user).** Validation page | 2025-03-24 Colombia -> festivo (San José moved), 2025-03-19 -> no | Nov 15-16 |
+| 7 | **Done 2026-11-13, checklist all green.** Manual test pass, polish (Prettier, app README), run instructions in `PROJECT_STATUS.md` and `Holidays.Presentation/README.md` | Checklist below all green | Nov 16 |
 | - | Buffer | | Nov 17 |
 
 ## Running it
@@ -164,15 +166,20 @@ npx ng g c --skip-tests features/countries/country-list   # etc. for each page
 
 ## Manual test checklist (milestone 7)
 
-- [ ] Countries: list, create "Portugal", edit name, delete it; delete Colombia -> conflict message.
-- [ ] Empty name / 101 chars blocked in form.
-- [ ] Types: list, create, edit, delete; delete "Fijo" -> conflict message.
-- [ ] Holidays: list shows country/type names and rule text.
-- [ ] Holidays: create fixed (type 1, 25/12), bridge (type 2), Easter-based (type 3, +1), edit an existing seeded Easter holiday without errors, delete.
-- [ ] Holidays: 30/02 and 29/02 blocked in form; type select shows only 5 types.
-- [ ] Validation: Colombia 2025-12-25 -> sí; 2025-03-19 -> no; 2025-03-24 -> sí (San José).
-- [ ] Validation: Ecuador shows its list; Argentina shows "sin festivos registrados".
-- [ ] API down -> "No se pudo conectar con el servidor" instead of a blank page.
+Source of each tick: "user" = checked in the browser during that milestone; "API" = checked by Claude through the UI proxy on 2026-11-13.
+
+- [x] Countries: list, create "Portugal", edit name, delete it; delete Colombia -> conflict message. (user, M3; 409 also API)
+- [x] Empty / whitespace-only name blocked in form. (user, M3)
+- [x] 101-char name blocked in form ("Máximo 100 caracteres."). (user, M7)
+- [x] Types: list, create, edit, delete; delete "Fijo" -> conflict message. (user, M4; 409 also API)
+- [x] Holidays: list shows country/type names and rule text. (user, M5)
+- [x] Holidays: create fixed (type 1, 25/12) and Easter-based (type 3, +1), edit seeded Jueves Santo without errors, delete. (user, M5)
+- [x] Holidays: create a bridge holiday (type 2), e.g. 19/03 Colombia, and see it moved to Monday on the validation page. (user, M7)
+- [x] Holidays: 30/02 and 29/02 blocked in form; type select shows only 5 types. (user, M5)
+- [x] Validation: Colombia 2025-12-25 -> sí; 2025-03-19 -> no; 2025-03-24 -> sí (San José). (user, M6; also API)
+- [x] Validation: Ecuador shows its list (11 holidays in 2025); Argentina shows "sin festivos registrados". (user, M6; also API)
+- [x] Validation: UK -> 409 conflict message (type-6 test data). (API)
+- [x] API down -> "No se pudo conectar con el servidor" instead of a blank page. (user, M7; proxy returns 502)
 
 ## How we'll work
 

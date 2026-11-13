@@ -1,1 +1,73 @@
-<p>holiday-form works!</p>
+<h1>{{ isEdit() ? 'Editar festivo' : 'Nuevo festivo' }}</h1>
+
+<form [formGroup]="form" (ngSubmit)="save()" class="entity-form">
+  <mat-form-field>
+    <mat-label>Nombre</mat-label>
+    <input matInput formControlName="name" />
+    @if (form.controls.name.hasError('maxlength')) {
+      <mat-error>Máximo 100 caracteres.</mat-error>
+    } @else {
+      <mat-error>El nombre es obligatorio.</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>País</mat-label>
+    <mat-select formControlName="countryId">
+      @for (country of countries(); track country.id) {
+        <mat-option [value]="country.id">{{ country.name }}</mat-option>
+      }
+    </mat-select>
+    <mat-error>Seleccione un país.</mat-error>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Tipo</mat-label>
+    <mat-select formControlName="typeId">
+      @for (holidayType of holidayTypes(); track holidayType.id) {
+        <mat-option [value]="holidayType.id">{{ holidayType.type }}</mat-option>
+      }
+    </mat-select>
+    <mat-error>Seleccione un tipo.</mat-error>
+  </mat-form-field>
+
+  @if (usesEasterDays()) {
+    <mat-form-field>
+      <mat-label>Días desde el Domingo de Pascua</mat-label>
+      <input matInput type="number" formControlName="easterDays" />
+      <mat-hint
+        >Negativo = antes de Pascua. Ej.: -2 = Viernes Santo, 0 = Domingo de Pascua.</mat-hint
+      >
+      <mat-error>Ingrese un número entero.</mat-error>
+    </mat-form-field>
+  } @else {
+    <div class="date-fields">
+      <mat-form-field>
+        <mat-label>Día</mat-label>
+        <input matInput type="number" formControlName="day" min="1" max="31" />
+        @if (form.controls.day.hasError('dayInMonth')) {
+          <mat-error>
+            Ingrese un día entre 1 y {{ form.controls.day.getError('dayInMonth').maxDay }}.
+          </mat-error>
+        } @else {
+          <mat-error>Ingrese el día.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Mes</mat-label>
+        <mat-select formControlName="month">
+          @for (monthName of monthNames; track $index) {
+            <mat-option [value]="$index + 1">{{ monthName }}</mat-option>
+          }
+        </mat-select>
+        <mat-error>Seleccione el mes.</mat-error>
+      </mat-form-field>
+    </div>
+  }
+
+  <div class="form-actions">
+    <a mat-button routerLink="/festivos">Cancelar</a>
+    <button mat-flat-button type="submit" [disabled]="saving()">Guardar</button>
+  </div>
+</form>
