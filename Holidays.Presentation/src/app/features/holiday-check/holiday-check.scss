@@ -1,0 +1,83 @@
+@use '@angular/material' as mat;
+
+.check-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 16px;
+  // Less padding at the bottom: the fields already reserve space for their error text
+  padding: 24px 24px 4px;
+
+  mat-form-field {
+    flex: 1 1 220px;
+  }
+}
+
+// Same height as the form fields next to it
+.check-button {
+  margin-bottom: 20px;
+
+  @include mat.button-overrides(
+    (
+      filled-container-height: 56px,
+    )
+  );
+}
+
+.result {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 20px;
+  padding: 20px 24px;
+  border-left: 6px solid var(--mat-sys-outline);
+
+  &.is-holiday {
+    background: var(--app-accent-container);
+    border-color: var(--app-accent);
+    color: var(--app-on-accent-container);
+  }
+}
+
+.result-icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--mat-sys-surface-container-high);
+  color: var(--mat-sys-on-surface-variant);
+
+  mat-icon {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+  }
+
+  .is-holiday & {
+    background: var(--app-accent);
+    color: var(--app-on-accent);
+  }
+}
+
+.result-title {
+  font: var(--mat-sys-title-large);
+  font-weight: 700;
+}
+
+.result-names {
+  font-weight: 500;
+}
+
+.year-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: 32px 0 12px;
+
+  h2 {
+    margin: 0;
+  }
+}

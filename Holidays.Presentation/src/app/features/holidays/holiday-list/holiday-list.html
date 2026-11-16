@@ -1,0 +1,90 @@
+<div class="page-header">
+  <div>
+    <h1>Festivos</h1>
+    <p class="page-subtitle">Festivos de cada país y la regla con la que se calcula su fecha.</p>
+  </div>
+  <a mat-flat-button routerLink="/festivos/nuevo">
+    <mat-icon>add</mat-icon>
+    Nuevo festivo
+  </a>
+</div>
+
+<div class="surface-card table-card">
+  <div class="list-toolbar">
+    <!-- subscriptSizing="dynamic": no reserved space under the field for hints/errors -->
+    <mat-form-field class="country-filter" subscriptSizing="dynamic">
+      <mat-label>País</mat-label>
+      <mat-select
+        [value]="selectedCountryId()"
+        (selectionChange)="selectedCountryId.set($event.value)"
+      >
+        <mat-option [value]="null">Todos</mat-option>
+        @for (country of countries(); track country.id) {
+          <mat-option [value]="country.id">{{ country.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    @if (!loading()) {
+      <span class="row-count">
+        {{ visibleRows().length }} {{ visibleRows().length === 1 ? 'festivo' : 'festivos' }}
+      </span>
+    }
+  </div>
+
+  @if (loading()) {
+    <mat-progress-bar mode="indeterminate" />
+  } @else if (visibleRows().length === 0) {
+    <app-empty-state icon="event_busy" message="No hay festivos registrados." />
+  } @else {
+    <table mat-table [dataSource]="visibleRows()" class="data-table">
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Nombre</th>
+        <td mat-cell *matCellDef="let row">{{ row.name }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="country">
+        <th mat-header-cell *matHeaderCellDef>País</th>
+        <td mat-cell *matCellDef="let row">{{ row.countryName }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef>Tipo</th>
+        <td mat-cell *matCellDef="let row">
+          <span class="badge">{{ row.typeName }}</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="rule">
+        <th mat-header-cell *matHeaderCellDef>Regla</th>
+        <td mat-cell *matCellDef="let row">{{ row.rule }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let row" class="actions-cell">
+          <a
+            mat-icon-button
+            [routerLink]="['/festivos', row.id]"
+            matTooltip="Editar"
+            aria-label="Editar"
+          >
+            <mat-icon>edit</mat-icon>
+          </a>
+          <button
+            mat-icon-button
+            class="danger-action"
+            (click)="deleteHoliday(row)"
+            matTooltip="Eliminar"
+            aria-label="Eliminar"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr mat-row *matRowDef="let row; columns: columns"></tr>
+    </table>
+  }
+</div>
