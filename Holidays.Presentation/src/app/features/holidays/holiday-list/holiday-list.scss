@@ -1,3 +1,19 @@
+// Filter + row count, above the table and inside the same card
+.list-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
 .country-filter {
   width: 300px;
+  max-width: 100%;
+}
+
+.row-count {
+  color: var(--mat-sys-on-surface-variant);
 }

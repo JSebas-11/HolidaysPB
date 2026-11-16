@@ -3,16 +3,26 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { filter, switchMap } from 'rxjs';
 import { HolidayTypeOverview } from '../../../core/models/holiday-type';
 import { HolidayTypeService } from '../../../core/services/holiday-type-service';
 import { Confirmation } from '../../../shared/confirm-dialog/confirmation';
+import { EmptyState } from '../../../shared/empty-state/empty-state';
 import { Notifier } from '../../../shared/notifier';
 
 @Component({
   selector: 'app-holiday-type-list',
-  imports: [RouterLink, MatTableModule, MatButtonModule, MatIconModule, MatProgressBarModule],
+  imports: [
+    RouterLink,
+    MatTableModule,
+    MatButtonModule,
+    MatIconModule,
+    MatProgressBarModule,
+    MatTooltipModule,
+    EmptyState,
+  ],
   templateUrl: './holiday-type-list.html',
   styleUrl: './holiday-type-list.scss',
 })
@@ -35,6 +45,7 @@ export class HolidayTypeList implements OnInit {
         title: 'Eliminar tipo de festivo',
         message: `¿Seguro que desea eliminar "${holidayType.type}"?`,
         confirmText: 'Eliminar',
+        destructive: true,
       })
       .pipe(
         filter((confirmed) => confirmed),

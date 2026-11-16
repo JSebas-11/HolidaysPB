@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { filter, forkJoin, switchMap } from 'rxjs';
 import { CountryOverview } from '../../../core/models/country';
@@ -15,6 +16,7 @@ import { HolidayService } from '../../../core/services/holiday-service';
 import { HolidayTypeService } from '../../../core/services/holiday-type-service';
 import { MONTH_NAMES } from '../../../core/utils/months';
 import { Confirmation } from '../../../shared/confirm-dialog/confirmation';
+import { EmptyState } from '../../../shared/empty-state/empty-state';
 import { Notifier } from '../../../shared/notifier';
 
 /** What the table shows: names instead of ids, and the rule as text. */
@@ -37,6 +39,8 @@ interface HolidayRow {
     MatProgressBarModule,
     MatFormFieldModule,
     MatSelectModule,
+    MatTooltipModule,
+    EmptyState,
   ],
   templateUrl: './holiday-list.html',
   styleUrl: './holiday-list.scss',
@@ -72,6 +76,7 @@ export class HolidayList implements OnInit {
         title: 'Eliminar festivo',
         message: `¿Seguro que desea eliminar "${row.name}" (${row.countryName})?`,
         confirmText: 'Eliminar',
+        destructive: true,
       })
       .pipe(
         filter((confirmed) => confirmed),

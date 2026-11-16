@@ -6,6 +6,8 @@ export interface ConfirmDialogData {
   title: string;
   message: string;
   confirmText?: string;
+  /** Paints the confirm button in the error color (deletes). */
+  destructive?: boolean;
 }
 
 /** Yes/no dialog. Open it through the Confirmation service, not directly. */

@@ -1,5 +1,8 @@
 <div class="page-header">
-  <h1>Países</h1>
+  <div>
+    <h1>Países</h1>
+    <p class="page-subtitle">Países para los que se registran festivos.</p>
+  </div>
   <a mat-flat-button routerLink="/paises/nuevo">
     <mat-icon>add</mat-icon>
     Nuevo país
@@ -9,32 +12,47 @@
 @if (loading()) {
   <mat-progress-bar mode="indeterminate" />
 } @else if (countries().length === 0) {
-  <p>No hay países registrados.</p>
+  <div class="surface-card">
+    <app-empty-state icon="public" message="No hay países registrados." />
+  </div>
 } @else {
-  <table mat-table [dataSource]="countries()" class="data-table">
-    <ng-container matColumnDef="id">
-      <th mat-header-cell *matHeaderCellDef>Id</th>
-      <td mat-cell *matCellDef="let country">{{ country.id }}</td>
-    </ng-container>
+  <div class="surface-card table-card">
+    <table mat-table [dataSource]="countries()" class="data-table">
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef class="id-cell">Id</th>
+        <td mat-cell *matCellDef="let country" class="id-cell">{{ country.id }}</td>
+      </ng-container>
 
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef>Nombre</th>
-      <td mat-cell *matCellDef="let country">{{ country.name }}</td>
-    </ng-container>
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Nombre</th>
+        <td mat-cell *matCellDef="let country">{{ country.name }}</td>
+      </ng-container>
 
-    <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef></th>
-      <td mat-cell *matCellDef="let country" class="actions-cell">
-        <a mat-icon-button [routerLink]="['/paises', country.id]" aria-label="Editar">
-          <mat-icon>edit</mat-icon>
-        </a>
-        <button mat-icon-button (click)="deleteCountry(country)" aria-label="Eliminar">
-          <mat-icon>delete</mat-icon>
-        </button>
-      </td>
-    </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let country" class="actions-cell">
+          <a
+            mat-icon-button
+            [routerLink]="['/paises', country.id]"
+            matTooltip="Editar"
+            aria-label="Editar"
+          >
+            <mat-icon>edit</mat-icon>
+          </a>
+          <button
+            mat-icon-button
+            class="danger-action"
+            (click)="deleteCountry(country)"
+            matTooltip="Eliminar"
+            aria-label="Eliminar"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="columns"></tr>
-    <tr mat-row *matRowDef="let row; columns: columns"></tr>
-  </table>
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr mat-row *matRowDef="let row; columns: columns"></tr>
+    </table>
+  </div>
 }

@@ -35,7 +35,7 @@ src/app/
   core/errors/       HTTP status -> Spanish message
   core/validators/   dayInMonthValidator
   core/utils/        Month names, local date formatting
-  shared/            Notifier (snackbar), Confirmation dialog
+  shared/            Notifier (snackbar), Confirmation dialog, EmptyState
   features/          One folder per screen
 ```
 

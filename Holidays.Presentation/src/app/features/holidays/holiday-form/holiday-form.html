@@ -1,6 +1,10 @@
+<a class="back-link" routerLink="/festivos">
+  <mat-icon>arrow_back</mat-icon>
+  Festivos
+</a>
 <h1>{{ isEdit() ? 'Editar festivo' : 'Nuevo festivo' }}</h1>
 
-<form [formGroup]="form" (ngSubmit)="save()" class="entity-form">
+<form [formGroup]="form" (ngSubmit)="save()" class="surface-card entity-form">
   <mat-form-field>
     <mat-label>Nombre</mat-label>
     <input matInput formControlName="name" />

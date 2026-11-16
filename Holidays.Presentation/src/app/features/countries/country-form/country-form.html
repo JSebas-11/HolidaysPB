@@ -1,6 +1,10 @@
+<a class="back-link" routerLink="/paises">
+  <mat-icon>arrow_back</mat-icon>
+  Países
+</a>
 <h1>{{ isEdit() ? 'Editar país' : 'Nuevo país' }}</h1>
 
-<form [formGroup]="form" (ngSubmit)="save()" class="entity-form">
+<form [formGroup]="form" (ngSubmit)="save()" class="surface-card entity-form">
   <mat-form-field>
     <mat-label>Nombre</mat-label>
     <input matInput formControlName="name" />
@@ -19,9 +23,12 @@
 
 @if (holidays().length > 0) {
   <h2>Festivos asociados</h2>
-  <ul>
+  <ul class="surface-card related-list">
     @for (holiday of holidays(); track holiday.id) {
-      <li>{{ holiday.name }}</li>
+      <li>
+        <mat-icon>event</mat-icon>
+        {{ holiday.name }}
+      </li>
     }
   </ul>
 }

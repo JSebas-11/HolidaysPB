@@ -1,6 +1,11 @@
-<h1>Validación de festivos</h1>
+<div class="page-header">
+  <div>
+    <h1>Validación de festivos</h1>
+    <p class="page-subtitle">Consulte si una fecha es festivo en un país.</p>
+  </div>
+</div>
 
-<form [formGroup]="form" (ngSubmit)="check()" class="check-form">
+<form [formGroup]="form" (ngSubmit)="check()" class="surface-card check-form">
   <mat-form-field>
     <mat-label>País</mat-label>
     <mat-select formControlName="countryId">
@@ -28,7 +33,10 @@
     <mat-error>Seleccione una fecha.</mat-error>
   </mat-form-field>
 
-  <button mat-flat-button type="submit" [disabled]="checking()">Verificar</button>
+  <button mat-flat-button class="check-button" type="submit" [disabled]="checking()">
+    <mat-icon>search</mat-icon>
+    Verificar
+  </button>
 </form>
 
 @if (checking()) {
@@ -36,39 +44,55 @@
 }
 
 @if (result(); as result) {
-  <div class="result" [class.is-holiday]="result.isHoliday">
-    <mat-icon class="result-icon">{{ result.isHoliday ? 'celebration' : 'work' }}</mat-icon>
+  <div class="surface-card result" [class.is-holiday]="result.isHoliday">
+    <div class="result-icon">
+      <mat-icon>{{ result.isHoliday ? 'celebration' : 'work' }}</mat-icon>
+    </div>
     <div>
       <div class="result-title">{{ result.isHoliday ? 'Es festivo' : 'No es festivo' }}</div>
       <div>{{ result.date | date: 'fullDate' }} · {{ result.countryName }}</div>
       @if (result.holidayNames.length > 0) {
-        <div>{{ result.holidayNames.join(', ') }}</div>
+        <div class="result-names">{{ result.holidayNames.join(', ') }}</div>
       }
     </div>
   </div>
 
-  <h2>Festivos de {{ result.countryName }} en {{ result.date.getFullYear() }}</h2>
+  <div class="year-header">
+    <h2>Festivos de {{ result.countryName }} en {{ result.date.getFullYear() }}</h2>
+    @if (result.yearHolidays.length > 0) {
+      <span class="badge">
+        {{ result.yearHolidays.length }}
+        {{ result.yearHolidays.length === 1 ? 'festivo' : 'festivos' }}
+      </span>
+    }
+  </div>
 
   @if (result.yearHolidays.length === 0) {
-    <p>Este país no tiene festivos registrados.</p>
+    <div class="surface-card">
+      <app-empty-state icon="event_busy" message="Este país no tiene festivos registrados." />
+    </div>
   } @else {
-    <table mat-table [dataSource]="result.yearHolidays" class="data-table">
-      <ng-container matColumnDef="date">
-        <th mat-header-cell *matHeaderCellDef>Fecha</th>
-        <td mat-cell *matCellDef="let holiday">{{ holiday.date | date: "EEEE d 'de' MMMM" }}</td>
-      </ng-container>
+    <div class="surface-card table-card">
+      <table mat-table [dataSource]="result.yearHolidays" class="data-table">
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef>Fecha</th>
+          <td mat-cell *matCellDef="let holiday">
+            {{ holiday.date | date: "EEEE d 'de' MMMM" }}
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="holiday">
-        <th mat-header-cell *matHeaderCellDef>Festivo</th>
-        <td mat-cell *matCellDef="let holiday">{{ holiday.holiday }}</td>
-      </ng-container>
+        <ng-container matColumnDef="holiday">
+          <th mat-header-cell *matHeaderCellDef>Festivo</th>
+          <td mat-cell *matCellDef="let holiday">{{ holiday.holiday }}</td>
+        </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="columns"></tr>
-      <tr
-        mat-row
-        *matRowDef="let row; columns: columns"
-        [class.selected-date]="row.date === result.isoDate"
-      ></tr>
-    </table>
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: columns"
+          [class.selected-row]="row.date === result.isoDate"
+        ></tr>
+      </table>
+    </div>
   }
 }

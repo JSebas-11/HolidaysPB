@@ -7,6 +7,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 interface NavLink {
   path: string;
   label: string;
+  icon: string;
 }
 
 @Component({
@@ -24,10 +25,10 @@ interface NavLink {
 })
 export class App {
   protected readonly links: NavLink[] = [
-    { path: '/validacion', label: 'Validación' },
-    { path: '/paises', label: 'Países' },
-    { path: '/tipos', label: 'Tipos' },
-    { path: '/festivos', label: 'Festivos' },
+    { path: '/validacion', label: 'Validación', icon: 'event_available' },
+    { path: '/paises', label: 'Países', icon: 'public' },
+    { path: '/tipos', label: 'Tipos', icon: 'category' },
+    { path: '/festivos', label: 'Festivos', icon: 'celebration' },
   ];
 
   constructor() {

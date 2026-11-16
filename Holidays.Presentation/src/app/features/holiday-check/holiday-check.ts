@@ -15,6 +15,7 @@ import { CountryOverview } from '../../core/models/country';
 import { CalendarService } from '../../core/services/calendar-service';
 import { CountryService } from '../../core/services/country-service';
 import { toLocalIsoDate } from '../../core/utils/dates';
+import { EmptyState } from '../../shared/empty-state/empty-state';
 import { Notifier } from '../../shared/notifier';
 
 /** Snapshot of the last check, so the result doesn't change while the user edits the form. */
@@ -42,6 +43,7 @@ interface CheckResult {
     MatIconModule,
     MatProgressBarModule,
     MatTableModule,
+    EmptyState,
   ],
   templateUrl: './holiday-check.html',
   styleUrl: './holiday-check.scss',

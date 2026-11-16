@@ -3,16 +3,26 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { filter, switchMap } from 'rxjs';
 import { CountryOverview } from '../../../core/models/country';
 import { CountryService } from '../../../core/services/country-service';
 import { Confirmation } from '../../../shared/confirm-dialog/confirmation';
+import { EmptyState } from '../../../shared/empty-state/empty-state';
 import { Notifier } from '../../../shared/notifier';
 
 @Component({
   selector: 'app-country-list',
-  imports: [RouterLink, MatTableModule, MatButtonModule, MatIconModule, MatProgressBarModule],
+  imports: [
+    RouterLink,
+    MatTableModule,
+    MatButtonModule,
+    MatIconModule,
+    MatProgressBarModule,
+    MatTooltipModule,
+    EmptyState,
+  ],
   templateUrl: './country-list.html',
   styleUrl: './country-list.scss',
 })
@@ -35,6 +45,7 @@ export class CountryList implements OnInit {
         title: 'Eliminar país',
         message: `¿Seguro que desea eliminar "${country.name}"?`,
         confirmText: 'Eliminar',
+        destructive: true,
       })
       .pipe(
         filter((confirmed) => confirmed), // stop here if the user cancelled

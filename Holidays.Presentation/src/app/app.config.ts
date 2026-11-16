@@ -4,6 +4,7 @@ import { provideHttpClient } from '@angular/common/http';
 import localeEs from '@angular/common/locales/es';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { routes } from './app.routes';
 
 // Spanish formats for pipes like `date` ("24 mar 2025")
@@ -18,5 +19,6 @@ export const appConfig: ApplicationConfig = {
     provideNativeDateAdapter(),
     { provide: LOCALE_ID, useValue: 'es' },
     { provide: MAT_DATE_LOCALE, useValue: 'es-CO' },
+    { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } },
   ],
 };

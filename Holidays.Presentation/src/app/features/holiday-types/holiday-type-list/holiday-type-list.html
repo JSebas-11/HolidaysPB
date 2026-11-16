@@ -1,5 +1,8 @@
 <div class="page-header">
-  <h1>Tipos de festivo</h1>
+  <div>
+    <h1>Tipos de festivo</h1>
+    <p class="page-subtitle">Reglas con las que se calcula la fecha de un festivo.</p>
+  </div>
   <a mat-flat-button routerLink="/tipos/nuevo">
     <mat-icon>add</mat-icon>
     Nuevo tipo
@@ -9,32 +12,47 @@
 @if (loading()) {
   <mat-progress-bar mode="indeterminate" />
 } @else if (holidayTypes().length === 0) {
-  <p>No hay tipos de festivo registrados.</p>
+  <div class="surface-card">
+    <app-empty-state icon="category" message="No hay tipos de festivo registrados." />
+  </div>
 } @else {
-  <table mat-table [dataSource]="holidayTypes()" class="data-table">
-    <ng-container matColumnDef="id">
-      <th mat-header-cell *matHeaderCellDef>Id</th>
-      <td mat-cell *matCellDef="let holidayType">{{ holidayType.id }}</td>
-    </ng-container>
+  <div class="surface-card table-card">
+    <table mat-table [dataSource]="holidayTypes()" class="data-table">
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef class="id-cell">Id</th>
+        <td mat-cell *matCellDef="let holidayType" class="id-cell">{{ holidayType.id }}</td>
+      </ng-container>
 
-    <ng-container matColumnDef="type">
-      <th mat-header-cell *matHeaderCellDef>Tipo</th>
-      <td mat-cell *matCellDef="let holidayType">{{ holidayType.type }}</td>
-    </ng-container>
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef>Tipo</th>
+        <td mat-cell *matCellDef="let holidayType">{{ holidayType.type }}</td>
+      </ng-container>
 
-    <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef></th>
-      <td mat-cell *matCellDef="let holidayType" class="actions-cell">
-        <a mat-icon-button [routerLink]="['/tipos', holidayType.id]" aria-label="Editar">
-          <mat-icon>edit</mat-icon>
-        </a>
-        <button mat-icon-button (click)="deleteHolidayType(holidayType)" aria-label="Eliminar">
-          <mat-icon>delete</mat-icon>
-        </button>
-      </td>
-    </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let holidayType" class="actions-cell">
+          <a
+            mat-icon-button
+            [routerLink]="['/tipos', holidayType.id]"
+            matTooltip="Editar"
+            aria-label="Editar"
+          >
+            <mat-icon>edit</mat-icon>
+          </a>
+          <button
+            mat-icon-button
+            class="danger-action"
+            (click)="deleteHolidayType(holidayType)"
+            matTooltip="Eliminar"
+            aria-label="Eliminar"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="columns"></tr>
-    <tr mat-row *matRowDef="let row; columns: columns"></tr>
-  </table>
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr mat-row *matRowDef="let row; columns: columns"></tr>
+    </table>
+  </div>
 }

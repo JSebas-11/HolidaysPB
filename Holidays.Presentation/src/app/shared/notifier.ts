@@ -13,6 +13,9 @@ export class Notifier {
 
   error(error: unknown, overrides?: ErrorMessageOverrides): void {
     console.error(error); // full details for debugging in the browser console
-    this.snackBar.open(toErrorMessage(error, overrides), 'Cerrar', { duration: 6000 });
+    this.snackBar.open(toErrorMessage(error, overrides), 'Cerrar', {
+      duration: 6000,
+      panelClass: 'snackbar-error', // red variant, styled in styles.scss
+    });
   }
 }

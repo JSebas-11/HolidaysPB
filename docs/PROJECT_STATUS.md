@@ -17,16 +17,18 @@ Scope is "make it work for the assignment". No extra polish or API work beyond w
 - Backend: all 5 layers implemented, builds with 0 errors. CRUD for countries, types and holidays + calendar endpoints working.
 - Backend fixes done and verified live: Easter-based holiday validation and day-vs-month validation (Known issues 1, 2).
 - Frontend: **feature-complete for the assignment.** Angular 22 + Material app in `Holidays.Presentation/`: CRUD for countries, holiday types and holidays, plus the holiday validation page. Milestones 0-7 done; full manual checklist green (2026-11-13). Details: `docs/FRONTEND_PLAN.md`.
+- UI redesign **done 2026-11-13**: dark-only navy theme, cards, empty states, destructive styling for deletes. Presentation only, no behavior change. Details: `docs/UI_REDESIGN_PLAN.md`.
 - Dev machine: Node 24.18, SQL Server in Docker (`sql_server` container).
 - Local DB has non-seed test data: country 22 "UNITED KINGDOM" and type 6 "Saint Patrick's Day" with holiday 32 "Tech day". Because of it, the UK calendar returns 409 (expected, see Known issue 3). Avoid UK in the demo or delete holiday 32.
 - Tests: none (manual checklist in `docs/FRONTEND_PLAN.md`).
-- Docs: `docs/API.md` (contract), `docs/FRONTEND_PLAN.md` (UI plan, decisions, checklist), `Holidays.Presentation/README.md` (UI run/structure), this file (status).
+- Docs: `docs/API.md` (contract), `docs/FRONTEND_PLAN.md` (UI plan, decisions, checklist), `docs/UI_REDESIGN_PLAN.md` (palette, look and feel), `Holidays.Presentation/README.md` (UI run/structure), this file (status).
 
 ## Next steps
 
 1. Before committing: keep `Holidays.API/appsettings.json` out of the commit (it holds the SA password); move it to user-secrets (see How to run).
 2. Hand in by 2026-11-17.
-3. Optional, only if time is left: backlog items below (none block the assignment).
+3. Re-run the manual checklist in `docs/FRONTEND_PLAN.md` once after the UI redesign (create/edit/delete flows; the redesign only touched templates and styles).
+4. Optional, only if time is left: backlog items below (none block the assignment).
 
 ## Open decisions
 
@@ -105,7 +107,7 @@ Ordered by impact on the UI.
 9. **Vulnerable transitive package**: `System.Security.Cryptography.Pkcs 9.0.11` (one moderate, one high advisory, NU1902/NU1903 on build). Pulled in transitively; pin a patched version in `Directory.Packages.props` (transitive pinning is already enabled).
 10. **No tests.** The calculation strategies are the obvious first target.
 11. **Stale `.http` file** (template leftover).
-12. **UI production bundle over the warning budget**: 876 kB initial (183 kB gzipped) vs 500 kB warning / 1 MB error. Doesn't affect `npm start`. Fix if ever needed: lazy-load routes with `loadComponent`.
+12. **UI production bundle over the warning budget**: 884 kB initial (185 kB gzipped) vs 500 kB warning / 1 MB error. Doesn't affect `npm start`. Fix if ever needed: lazy-load routes with `loadComponent`.
 
 ## Lessons learned
 

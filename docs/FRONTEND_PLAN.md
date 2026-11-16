@@ -61,7 +61,8 @@ Holidays.Presentation/
   proxy.conf.json                     /api -> http://localhost:7041
   angular.json                        serve.options.proxyConfig = proxy.conf.json
   src/
-    styles.scss                       Material theme + a few global rules
+    styles.scss                       Material theme (dark navy), brand variables (--app-*), shared layout classes
+    _theme-colors.scss                Generated navy palette (ng generate @angular/material:theme-color)
     app/
       app.ts / app.html               Shell: toolbar with nav links + <router-outlet>
       app.config.ts                   provideRouter, provideHttpClient, date adapter, locale 'es'
@@ -77,6 +78,7 @@ Holidays.Presentation/
       shared/
         notifier.ts                   Notifier.success(msg) / Notifier.error(err, overrides) -> snackbar
         confirm-dialog/               ConfirmDialog component + Confirmation.ask(data): Observable<boolean>
+        empty-state/                  EmptyState component: icon + message for lists with no rows
       features/
         countries/                    country-list/, country-form/
         holiday-types/                holiday-type-list/, holiday-type-form/
@@ -96,6 +98,8 @@ Holidays.Presentation/
 | `**` | redirect -> `/validacion` | |
 
 ## Screens
+
+Look and feel (palette, cards, shared classes) is described in `docs/UI_REDESIGN_PLAN.md`.
 
 **Shell**: `mat-toolbar` with "Festivos" title and links: Validación, Países, Tipos, Festivos.
 

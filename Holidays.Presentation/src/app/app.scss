@@ -1,23 +1,102 @@
+@use '@angular/material' as mat;
+
+$content-width: 1040px;
+
 .toolbar {
-  gap: 8px;
-  background: var(--mat-sys-primary);
-  color: var(--mat-sys-on-primary);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 0 24px;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.4);
+
+  @include mat.toolbar-overrides(
+    (
+      container-background-color: var(--app-toolbar-background),
+      container-text-color: #ffffff,
+    )
+  );
+
+  // Nav links are text buttons on a dark background
+  @include mat.button-overrides(
+    (
+      text-label-text-color: rgb(255 255 255 / 0.78),
+      text-state-layer-color: #ffffff,
+      text-ripple-color: rgb(255 255 255 / 0.12),
+    )
+  );
 }
 
-.title {
-  margin-right: 24px;
+// Same width as the page content, so the brand lines up with the page titles
+.toolbar-content {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  width: 100%;
+  max-width: $content-width;
+  margin: 0 auto;
 }
 
-nav a {
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   color: inherit;
+  font-weight: 700;
+  text-decoration: none;
 }
 
-nav a.active {
-  background: rgb(255 255 255 / 0.2);
+.brand-icon {
+  color: var(--app-accent);
+}
+
+.nav {
+  display: flex;
+  gap: 4px;
+}
+
+.nav-link.active {
+  background: rgb(255 255 255 / 0.16);
+
+  @include mat.button-overrides(
+    (
+      text-label-text-color: #ffffff,
+    )
+  );
 }
 
 .content {
-  max-width: 1000px;
-  margin: 24px auto;
-  padding: 0 16px;
+  max-width: $content-width;
+  margin: 0 auto;
+  padding: 32px 24px 48px;
+}
+
+// Phones: icon-only nav links
+@media (max-width: 640px) {
+  .toolbar {
+    padding: 0 12px;
+  }
+
+  .toolbar-content {
+    gap: 12px;
+    justify-content: space-between;
+  }
+
+  .nav-label {
+    display: none;
+  }
+
+  .nav-link {
+    min-width: 0;
+
+    @include mat.button-overrides(
+      (
+        text-icon-spacing: 0,
+        text-icon-offset: 0,
+      )
+    );
+  }
+
+  .content {
+    padding: 20px 12px 32px;
+  }
 }

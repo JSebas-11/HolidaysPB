@@ -1,0 +1,22 @@
+// :host = the <app-empty-state> element itself
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 40px 16px;
+  color: var(--mat-sys-on-surface-variant);
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  color: var(--mat-sys-outline);
+}
+
+.empty-message {
+  margin: 0;
+  font: var(--mat-sys-body-large);
+}
